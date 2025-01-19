@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Все люди</title>
+</head>
+<body>
+
+<div th:each="user1 : ${user}" >
+    <span th:text="${user1.id}"> </span>
+    <span th:text="${user1.name}"> </span>
+    <span th:text="${user1.lastname}"> </span>
+    <span th:text="${user1.age}"> </span>
+    <br>
+    <form th:method="GET" th:action="@{/user/{id}/edit (id=${user1.id})}">
+        <input type="submit" value="Update">
+    </form>
+    <form th:method="DELETE" th:action="@{/user/{id} (id=${user1.id})}">
+        <input type="submit" value="Delete">
+    </form>
+
+</div>
+<br>
+<hr>
+<a th:href="@{/user/new}"> Create new user</a>
+</body>
+</html>
