@@ -23,9 +23,6 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    UserDao userDao;
-
     @GetMapping
     public String index(Model model) {
         model.addAttribute("user", userService.getAll());
@@ -65,7 +62,7 @@ public class UsersController {
 
     @PatchMapping("/{id}")
     public String edit(@ModelAttribute("user") User user, @PathVariable("id") int id){
-        userDao.update(id, user);
+        userService.update(id, user);
         return "redirect:/user";
     }
 
