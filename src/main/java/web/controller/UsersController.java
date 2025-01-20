@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import web.DAO.UserDao;
-import web.Service.UserService;
+import org.springframework.web.bind.annotation.RequestParam;
+import web.service.UserService;
 import web.models.User;
 
 @Controller
@@ -20,8 +20,11 @@ import web.models.User;
 public class UsersController {
 
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UsersController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public String index(Model model) {
@@ -29,12 +32,13 @@ public class UsersController {
         return "showUsers";
     }
 
-    @GetMapping("/{id}")
-    public String getPerson(@PathVariable("id") int id, Model model) {
-        //получаем конкретного человека по его айди
+
+    @GetMapping("/person")
+    public String getPerson1(@RequestParam ("id") int id, Model model) {
         model.addAttribute("user1", userService.getById(id));
         return "userID";
     }
+
 
     @GetMapping("/new")
     public String form(@ModelAttribute("user") User user) {
@@ -42,10 +46,10 @@ public class UsersController {
     }
 
     @PostMapping
-    //эта аннотация гвоорит о том, что этот метод будет вызываться по ссылке /people, но
+    //эта аннотация гвоорит о том, что этот метод будет вызываться по ссылке /user, но
     //только с POST запросами (при обработе POST запроса)
     public String addPerson(@ModelAttribute("user") User user) {
-        //аннотация @ModelAttribute говорит о том что в полях объекта person
+        //аннотация @ModelAttribute говорит о том что в полях объекта user
         //будут лежать значения которые пришли в теле запроса, то есть связывает
         //данные из тела запроса с полями объекта, и назначает через сеттеры
         userService.save(user);
@@ -53,21 +57,25 @@ public class UsersController {
     }
 
 
-    @GetMapping("/{id}/edit")
-    public String editForm(Model model, @PathVariable("id") int id) {
+
+
+
+    @GetMapping("/edit")
+    public String editForm1(@RequestParam("id") int id, Model model) {
         model.addAttribute("user", userService.getById(id));
         return "edit";
     }
 
 
-    @PatchMapping("/{id}")
-    public String edit(@ModelAttribute("user") User user, @PathVariable("id") int id){
+    @PatchMapping()
+    public String edit(@ModelAttribute("user") User user, @RequestParam("id") int id) {
         userService.update(id, user);
         return "redirect:/user";
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id){
+
+    @DeleteMapping()
+    public String delete(@RequestParam("id") int id) {
         userService.delete(id);
         return "redirect:/user";
     }
