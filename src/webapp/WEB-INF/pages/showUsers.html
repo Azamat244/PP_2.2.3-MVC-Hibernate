@@ -13,10 +13,8 @@
     <span th:text="${user1.lastname}"> </span>
     <span th:text="${user1.age}"> </span>
     <br>
-    <form th:method="GET" th:action="@{/user/edit?id=${user1.id}}">
-        <input type="submit" value="Update">
-    </form>
-    <form th:method="DELETE" th:action="@{/user?id=${user1.id}}">
+    <a th:href="@{/user/edit(id=${user1.id})}"> Update </a>
+    <form th:method="DELETE" th:action="@{/user(id=${user1.id})}">
         <input type="submit" value="Delete">
     </form>
 

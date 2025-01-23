@@ -16,13 +16,21 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class JpaConfig {
 
+    private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/db?useSSL=false&serverTimezone=UTC";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "2443254";
+    private static final String DIALECT = "org.hibernate.dialect.MySQL5Dialect";
+    private static final String SHOW_SQL = "true";
+    private static final String HBM2DDL_AUTO = "update";
+
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/db?useSSL=false&serverTimezone=UTC");
-        dataSource.setUsername("root");
-        dataSource.setPassword("2443254");
+        dataSource.setDriverClassName(DB_DRIVER);
+        dataSource.setUrl(DB_URL);
+        dataSource.setUsername(DB_USER);
+        dataSource.setPassword(DB_PASSWORD);
         return dataSource;
     }
 
@@ -30,14 +38,14 @@ public class JpaConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource);
-        emf.setPackagesToScan("web.models"); // Укажите пакет, где находятся ваши сущности
+        emf.setPackagesToScan("web.model"); // Укажите пакет, где находятся ваши сущности
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         // Hibernate настройки
         java.util.Properties jpaProperties = new java.util.Properties();
-        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-        jpaProperties.put("hibernate.hbm2ddl.auto", "update");
-        jpaProperties.put("hibernate.show_sql", "true");
+        jpaProperties.put("hibernate.dialect", DIALECT);
+        jpaProperties.put("hibernate.hbm2ddl.auto", HBM2DDL_AUTO);
+        jpaProperties.put("hibernate.show_sql", SHOW_SQL);
         emf.setJpaProperties(jpaProperties);
 
         return emf;

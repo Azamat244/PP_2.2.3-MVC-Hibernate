@@ -3,7 +3,7 @@ package web.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import web.dao.UserDao;
-import web.models.User;
+import web.model.User;
 
 import java.util.List;
 
@@ -11,8 +11,11 @@ import java.util.List;
 public class UserSeviceImpl implements UserService {
 
 
-    @Autowired
-    UserDao userDao;
+    public final UserDao userDao;
+
+    public UserSeviceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     public void save(User user) {
