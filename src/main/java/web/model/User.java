@@ -7,6 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
@@ -16,13 +21,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column (name = "age")
+    @Column(name = "age")
+    @Min(value = 18)
+    @Max(value = 100)
     private int age;
 
-    @Column (name = "name")
+    @Column(name = "name")
+    @NotEmpty(message = "Поле не должно быть пустым")
+    @Size(min = 2, max = 30, message = "Длина имени должна быть больше 1 и меньше 30")
     private String name;
 
     @Column(name = "lastname")
+    @NotEmpty(message = "Поле не должно быть пустым")
+    @Size(min = 2, max = 30, message = "Длина фамилии должна быть больше 1 и меньше 30")
     private String lastname;
 
     public User() {
@@ -69,5 +80,16 @@ public class User {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && age == user.age && Objects.equals(name, user.name) && Objects.equals(lastname, user.lastname);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, age, name, lastname);
+    }
 }
