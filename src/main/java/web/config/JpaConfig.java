@@ -1,8 +1,11 @@
 package web.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -14,23 +17,25 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
+@PropertySource("classpath:db.properties")
 public class JpaConfig {
 
-    private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/db?useSSL=false&serverTimezone=UTC";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "2443254";
-    private static final String DIALECT = "org.hibernate.dialect.MySQL5Dialect";
-    private static final String SHOW_SQL = "true";
-    private static final String HBM2DDL_AUTO = "update";
+    private final Environment environment;
+
+    public JpaConfig(Environment environment) {
+        this.environment = environment;
+    }
+
+
+
 
     @Bean
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(DB_DRIVER);
-        dataSource.setUrl(DB_URL);
-        dataSource.setUsername(DB_USER);
-        dataSource.setPassword(DB_PASSWORD);
+        dataSource.setDriverClassName(environment.getProperty("db.driver"));
+        dataSource.setUrl(environment.getProperty("db.url"));
+        dataSource.setUsername(environment.getProperty("db.user"));
+        dataSource.setPassword(environment.getProperty("db.password"));
         return dataSource;
     }
 
@@ -43,9 +48,9 @@ public class JpaConfig {
 
         // Hibernate настройки
         java.util.Properties jpaProperties = new java.util.Properties();
-        jpaProperties.put("hibernate.dialect", DIALECT);
-        jpaProperties.put("hibernate.hbm2ddl.auto", HBM2DDL_AUTO);
-        jpaProperties.put("hibernate.show_sql", SHOW_SQL);
+        jpaProperties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
+        jpaProperties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl_auto"));
+        jpaProperties.put("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
         emf.setJpaProperties(jpaProperties);
 
         return emf;
